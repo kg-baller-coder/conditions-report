@@ -78,5 +78,24 @@ format or HTML/web version is a possible later step, not needed now.
 Snowpack numbers are all 0 right now since it's pre-season (early October) --
 logic is confirmed correct, just no snow to report yet.
 
-Next: avalanche module (CAIC danger via avalanche.org API), including the
-point-in-polygon zone lookup described above.
+**2026-10-04 (cont'd):** `avalanche.py` built -- fetches CAIC zones from the
+avalanche.org map-layer API and uses a hand-written point-in-polygon check
+(ray casting, no extra dependency) to find which zone a location falls in.
+Tested standalone against all three locations, then wired into
+`report.py`/`main.py`. All three data sources (weather, snowpack, avalanche)
+now run end to end for all three locations with `python main.py`.
+
+Note: CAIC's forecast season hasn't started yet (it's early October), so the
+API currently returns one combined "off-season" zone with "no rating" for
+the whole state rather than individual named zones. The code handles this
+correctly already (prints "forecast season hasn't started yet"), but the
+multi-zone, real-danger-rating path (e.g. "Vail & Summit County: considerable")
+hasn't been seen with live data yet -- worth a sanity check once the season
+opens, usually mid-November.
+
+MVP is functionally complete: all three sources work, each fails gracefully
+on its own, config-driven locations, clean terminal report.
+
+Next: decide what's left before calling this "v1" -- likely a pass on
+output formatting/polish, then tackle the README/CLAUDE.md's remaining
+"recruiter" framing once there's a full season of real data to show off.

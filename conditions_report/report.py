@@ -45,8 +45,26 @@ def print_snowpack_section(snowpack):
           f"SWE {_fmt_change(snowpack['swe_change_72h'], 'in')}")
 
 
-def print_location_report(name, weather_periods, snowpack):
+def print_avalanche_section(avalanche):
+    """Print an avalanche danger section. `avalanche` is the dict returned
+    by avalanche.get_avalanche_danger(), or None if that source failed."""
+    print("  AVALANCHE DANGER")
+    if avalanche is None:
+        print("    [unavailable]")
+        return
+
+    if avalanche["danger_level"] == -1:
+        print(f"    {avalanche['zone_name']}: forecast season hasn't started yet")
+    else:
+        print(f"    {avalanche['zone_name']}: {avalanche['danger']} "
+              f"(level {avalanche['danger_level']}/5)")
+    print(f"    {avalanche['travel_advice']}")
+    print(f"    full forecast: {avalanche['link']}")
+
+
+def print_location_report(name, weather_periods, snowpack, avalanche):
     """Print the full report for one location."""
     print(f"\n=== {name} ===")
     print_weather_section(weather_periods)
     print_snowpack_section(snowpack)
+    print_avalanche_section(avalanche)
