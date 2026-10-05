@@ -11,6 +11,8 @@ import os
 import webbrowser
 from datetime import datetime
 
+from .avalanche import DANGER_LABELS
+
 # report.html lives at the project root, one level up from this file's
 # folder (conditions_report/).
 OUTPUT_PATH = os.path.join(
@@ -99,7 +101,9 @@ def _avalanche_html(avy):
 def _location_card_html(result):
     return f"""
     <section class="card">
+      <div class="eyebrow">LOCATION</div>
       <h2>{result['name']}</h2>
+      <div class="dash"></div>
       <div class="section">
         <h3>Weather <span class="sub">next 3 days</span></h3>
         {_weather_html(result['weather'])}
@@ -116,6 +120,26 @@ def _location_card_html(result):
     """
 
 
+def _statewide_html(summary):
+    """The little synopsis banner under the hero heading, summarizing
+    avalanche danger across ALL of CAIC's zones -- not just the zones
+    your configured spots fall in."""
+    if summary is None:
+        return '<p class="unavailable">Statewide summary unavailable.</p>'
+
+    if not summary["season_active"]:
+        return (f'<p>CAIC’s forecast season hasn’t started yet — all '
+                f'{summary["zone_count"]} zone(s) show “no rating.” Full '
+                f'forecasts typically resume in mid-November.</p>')
+
+    parts = [f'{count} {DANGER_LABELS[lvl]}' for lvl, count in sorted(summary["counts"].items())]
+    breakdown = ", ".join(parts)
+    highest_label = DANGER_LABELS[summary["highest_level"]]
+    return (f'<p>Across Colorado’s {summary["zone_count"]} forecast zones today: '
+            f'{breakdown}. Highest danger right now: <strong>{summary["highest_zone"]}</strong> '
+            f'at {highest_label} ({summary["highest_level"]}/5).</p>')
+
+
 # Using .format() with a template this size gets messy because CSS also
 # uses curly braces, so the {generated}/{cards} placeholders below are
 # filled in with simple .replace() calls instead in build_html().
@@ -126,34 +150,71 @@ PAGE_TEMPLATE = """<!doctype html>
 <title>Colorado Conditions Report</title>
 <style>
   :root {
-    --bg: #f4f6f8;
-    --card-bg: #ffffff;
-    --text: #1b1f23;
-    --muted: #6b7280;
-    --border: #e3e6ea;
-    --accent: #2b6cb0;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #15181c;
-      --card-bg: #1f2328;
-      --text: #e9ecef;
-      --muted: #9aa4af;
-      --border: #30353b;
-      --accent: #6fa8dc;
-    }
+    --bg: #1b1c1f;
+    --card-bg: #232428;
+    --text: #e9eaec;
+    --muted: #92969d;
+    --border: #35373c;
+    --accent: #7ab8f0;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    padding: 24px 16px 48px;
+    padding: 40px 16px 48px;
     background: var(--bg);
     color: var(--text);
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   }
-  header { text-align: center; margin-bottom: 28px; }
-  header h1 { margin: 0 0 4px; font-size: 1.5rem; }
-  header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+
+  .eyebrow {
+    color: var(--accent);
+    font-size: 0.8rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .dash {
+    width: 40px;
+    height: 3px;
+    background: var(--accent);
+    border: none;
+    margin: 14px 0 16px;
+  }
+
+  header { text-align: center; margin-bottom: 20px; }
+  header .eyebrow { font-size: 1rem; }
+  header h1 {
+    margin: 2px 0 0;
+    font-size: 2.4rem;
+    font-weight: 800;
+    letter-spacing: 0.01em;
+  }
+  header .dash { margin: 18px auto; }
+  header .subtitle {
+    max-width: 480px;
+    margin: 0 auto;
+    color: var(--muted);
+    font-size: 0.95rem;
+  }
+  header .meta {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 0.8rem;
+  }
+
+  .statewide {
+    max-width: 680px;
+    margin: 28px auto 36px;
+    padding: 16px 20px;
+    background: var(--card-bg);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    text-align: center;
+  }
+  .statewide .eyebrow { font-size: 0.7rem; }
+  .statewide p { margin: 8px 0 0; font-size: 0.9rem; color: var(--text); }
+  .statewide strong { color: var(--accent); }
 
   .grid {
     display: grid;
@@ -166,9 +227,10 @@ PAGE_TEMPLATE = """<!doctype html>
     background: var(--card-bg);
     border: 1px solid var(--border);
     border-radius: 12px;
-    padding: 18px 20px;
+    padding: 20px 22px;
   }
-  .card h2 { margin: 0 0 12px; font-size: 1.2rem; }
+  .card h2 { margin: 4px 0 0; font-size: 1.4rem; font-weight: 800; }
+  .card .dash { margin: 14px 0 4px; }
   .section { margin-top: 18px; }
   .section h3 {
     margin: 0 0 8px;
@@ -191,8 +253,8 @@ PAGE_TEMPLATE = """<!doctype html>
   .stat-label { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; }
   .snow-changes { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
   .snow-changes div { margin-top: 2px; }
-  .change.up { color: #2b6cb0; }
-  .change.down { color: #c05621; }
+  .change.up { color: var(--accent); }
+  .change.down { color: #e2a857; }
   .change.flat { color: var(--muted); }
   .as-of { margin-top: 8px; font-size: 0.75rem; color: var(--muted); }
 
@@ -225,9 +287,16 @@ PAGE_TEMPLATE = """<!doctype html>
 </head>
 <body>
   <header>
-    <h1>Colorado Conditions Report</h1>
-    <p>generated __GENERATED__</p>
+    <div class="eyebrow">COLORADO</div>
+    <h1>CONDITIONS REPORT</h1>
+    <div class="dash"></div>
+    <p class="subtitle">Weather, snowpack, and avalanche danger for your spots, in one place.</p>
+    <p class="meta">generated __GENERATED__</p>
   </header>
+  <div class="statewide">
+    <div class="eyebrow">Statewide Avalanche Danger</div>
+    __STATEWIDE__
+  </div>
   <div class="grid">
     __CARDS__
   </div>
@@ -239,16 +308,19 @@ PAGE_TEMPLATE = """<!doctype html>
 """
 
 
-def build_html(results):
+def build_html(results, statewide_summary=None):
     now = datetime.now().strftime("%A, %B %d, %Y &middot; %I:%M %p")
     cards = "\n".join(_location_card_html(r) for r in results)
-    return PAGE_TEMPLATE.replace("__GENERATED__", now).replace("__CARDS__", cards)
+    return (PAGE_TEMPLATE
+            .replace("__GENERATED__", now)
+            .replace("__CARDS__", cards)
+            .replace("__STATEWIDE__", _statewide_html(statewide_summary)))
 
 
-def write_report(results, auto_open=True):
+def write_report(results, statewide_summary=None, auto_open=True):
     """Build the HTML, save it to report.html, and (by default) open it
     in your default browser. Returns the file path."""
-    html = build_html(results)
+    html = build_html(results, statewide_summary)
     with open(OUTPUT_PATH, "w") as f:
         f.write(html)
     if auto_open:

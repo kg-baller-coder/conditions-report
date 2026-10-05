@@ -32,12 +32,14 @@ def main():
             "avalanche": avy,
         })
 
+    statewide = avalanche.get_statewide_summary()
+
     report.print_report_header()
     for r in results:
         report.print_location_report(r["name"], r["weather"], r["snowpack"], r["avalanche"])
     report.print_report_footer()
 
-    html_path = html_report.write_report(results)
+    html_path = html_report.write_report(results, statewide)
     print(f"\nHTML report saved and opened: {html_path}")
 
 

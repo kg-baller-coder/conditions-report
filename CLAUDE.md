@@ -116,7 +116,19 @@ Opens automatically in the default browser via `webbrowser.open()`;
 Shell alias `conditions` (in `~/.zshrc`) runs the whole thing from any
 terminal: cd's into the project, activates the venv, runs `main.py`.
 
+**2026-10-04 (cont'd):** Re-themed `report.html` to dark grey / light blue
+(dropped the earlier light/dark auto-switching -- this is now a fixed
+theme) and restyled headings to an overline-label + bold-heading +
+short-dash pattern (inspired by a design Konnor shared), applied to both
+the hero header and each location card. Added a statewide avalanche
+synopsis: `avalanche.get_statewide_summary()` looks at ALL of CAIC's
+zones (not just the ones your 3 spots fall in) and summarizes danger
+levels across the state; shown in a small banner under the hero heading.
+Currently reports "season hasn't started" since it's pre-season --
+worth a look once CAIC's season opens to confirm the real breakdown text
+reads well with multiple zones/ratings.
+
 Next: nothing required. Candidates for a future session: SQLite history,
 snowpack charts, scheduled daily run (see "Later" above) -- or just revisit
-once the season opens to confirm the avalanche section looks right with a
-real multi-zone, rated forecast.
+once the season opens to confirm the avalanche sections look right with
+real multi-zone, rated forecasts.

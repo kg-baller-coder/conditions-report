@@ -110,8 +110,57 @@ def get_avalanche_danger(lat, lon):
     return None
 
 
+DANGER_LABELS = {1: "Low", 2: "Moderate", 3: "Considerable", 4: "High", 5: "Extreme"}
+
+
+def get_statewide_summary():
+    """
+    Return a short, data-driven summary of avalanche danger across ALL of
+    CAIC's zones for the day -- not just the zones your configured spots
+    happen to fall in. Meant for a quick "big picture" line at the top of
+    the report.
+
+    Returns a dict. If the season hasn't started (every zone shows "no
+    rating"), season_active is False. Otherwise it includes how many
+    zones are at each danger level and which zone is highest right now.
+    Returns None if the API can't be reached at all.
+    """
+    try:
+        resp = requests.get(MAP_LAYER_URL, timeout=10)
+        resp.raise_for_status()
+        zones = resp.json()["features"]
+    except requests.RequestException as e:
+        print(f"  [avalanche] could not fetch statewide summary: {e}")
+        return None
+    except KeyError as e:
+        print(f"  [avalanche] unexpected response shape: {e}")
+        return None
+
+    levels = [z["properties"]["danger_level"] for z in zones]
+    rated_levels = [lvl for lvl in levels if lvl >= 1]  # drop "no rating" (-1)
+
+    if not rated_levels:
+        return {"season_active": False, "zone_count": len(zones)}
+
+    counts = {lvl: rated_levels.count(lvl) for lvl in sorted(set(rated_levels))}
+    highest_level = max(rated_levels)
+    highest_zone = next(
+        z["properties"]["name"] for z in zones
+        if z["properties"]["danger_level"] == highest_level
+    )
+
+    return {
+        "season_active": True,
+        "zone_count": len(zones),
+        "counts": counts,  # e.g. {1: 2, 2: 5, 3: 3} -> 2 zones Low, 5 Moderate, 3 Considerable
+        "highest_level": highest_level,
+        "highest_zone": highest_zone,
+    }
+
+
 if __name__ == "__main__":
     # Quick manual test: python conditions_report/avalanche.py
     print(get_avalanche_danger(39.4817, -106.1319))   # Copper Mountain
     print(get_avalanche_danger(39.6636, -105.8792))   # Loveland Pass
     print(get_avalanche_danger(39.5306, -106.2172))   # Vail Pass
+    print(get_statewide_summary())
