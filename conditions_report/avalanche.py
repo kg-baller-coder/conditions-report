@@ -78,6 +78,7 @@ def get_avalanche_danger(lat, lon):
             "zone_name": "Vail & Summit County",
             "danger": "considerable",
             "danger_level": 3,          # -1 means "no rating" (off-season)
+            "color": "#f7931e",         # CAIC's own color for this rating
             "travel_advice": "...",
             "link": "https://avalanche.state.co.us/...",
         }
@@ -100,6 +101,7 @@ def get_avalanche_danger(lat, lon):
                 "zone_name": p["name"],
                 "danger": p["danger"],
                 "danger_level": p["danger_level"],
+                "color": p["color"],
                 "travel_advice": p["travel_advice"],
                 "link": p["link"],
             }

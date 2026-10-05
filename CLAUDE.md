@@ -103,6 +103,19 @@ change, ANSI color coding for avalanche danger level (1-5), and a safety
 disclaimer footer. `v1` / MVP is complete: `python main.py` prints a full,
 readable report for all three locations from a fresh clone.
 
+**2026-10-04 (cont'd):** Added `html_report.py` -- generates a styled,
+self-contained `report.html` (no external fonts/JS, works offline) each
+run, using the same data the terminal report uses. Card-per-location
+layout, avalanche danger badges colored using CAIC's own `color` value
+from the API (not a hardcoded guess), light/dark mode via
+`prefers-color-scheme`. `main.py` now fetches all data once into a list of
+dicts, then feeds both the terminal printer and the HTML builder from it.
+Opens automatically in the default browser via `webbrowser.open()`;
+`report.html` is gitignored since it's regenerated every run.
+
+Shell alias `conditions` (in `~/.zshrc`) runs the whole thing from any
+terminal: cd's into the project, activates the venv, runs `main.py`.
+
 Next: nothing required. Candidates for a future session: SQLite history,
 snowpack charts, scheduled daily run (see "Later" above) -- or just revisit
 once the season opens to confirm the avalanche section looks right with a

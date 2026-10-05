@@ -22,8 +22,9 @@ For each location in `config/locations.yaml`, it pulls:
 - **Avalanche danger** -- current danger rating for the relevant CAIC zone,
   via the [avalanche.org Public API](https://github.com/NationalAvalancheCenter/Avalanche.org-Public-API-Docs)
 
-...and prints it all as one clean report. All three data sources are free,
-public, and require no API key.
+...and prints it all as one clean terminal report, plus saves and opens a
+styled `report.html` version. All three data sources are free, public, and
+require no API key.
 
 ## How to run it
 
