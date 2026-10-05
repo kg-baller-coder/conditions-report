@@ -38,7 +38,24 @@ python main.py
 ```
 
 To track your own spots, edit `config/locations.yaml` -- no code changes
-needed.
+needed. Each entry needs a lat/lon and the nearest NRCS SNOTEL station ID
+(find one at [wcc.sc.egov.usda.gov/nwcc](https://wcc.sc.egov.usda.gov/nwcc/)).
+
+## Using this outside Colorado
+
+The weather (`weather.py`) and snowpack (`snowpack.py`) modules work
+anywhere in the US -- the NWS and SNOTEL networks both cover the whole
+country. The avalanche module (`avalanche.py`) is CAIC-specific, but the
+same avalanche.org API covers every US avalanche center, so pointing it at
+a different `center_id` (e.g. `"UAC"` for Utah) is a small, contained
+change rather than a rewrite.
+
+## Contributing
+
+This started as a personal/learning project, so it's intentionally small
+and simple rather than fully generalized -- but pull requests, issues, and
+forks are welcome. `CLAUDE.md` has the design notes and reasoning behind
+the current structure if you want context before changing something.
 
 ## Tech
 
@@ -50,3 +67,7 @@ simple. See [CLAUDE.md](CLAUDE.md) for design notes and current build status.
 - Save daily data to SQLite to track trends over a season
 - Charts of snowpack over time
 - Scheduled daily run that emails/texts the report
+
+## License
+
+[MIT](LICENSE) -- use it, fork it, change it.
