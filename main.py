@@ -17,11 +17,13 @@ def load_locations(path="config/locations.yaml"):
 def main():
     locations = load_locations()
 
+    report.print_report_header()
     for loc in locations:
         weather_periods = weather.get_forecast(loc["lat"], loc["lon"])
         snow = snowpack.get_snowpack(loc["snotel_station"])
         avy = avalanche.get_avalanche_danger(loc["lat"], loc["lon"])
         report.print_location_report(loc["name"], weather_periods, snow, avy)
+    report.print_report_footer()
 
 
 if __name__ == "__main__":

@@ -96,6 +96,14 @@ opens, usually mid-November.
 MVP is functionally complete: all three sources work, each fails gracefully
 on its own, config-driven locations, clean terminal report.
 
-Next: decide what's left before calling this "v1" -- likely a pass on
-output formatting/polish, then tackle the README/CLAUDE.md's remaining
-"recruiter" framing once there's a full season of real data to show off.
+**2026-10-04 (cont'd):** Polish pass done -- `report.py` now prints a
+header with a generated timestamp, consistent section dividers, wrapped
+text so nothing runs off the terminal width, ▲/▼ arrows for snowpack
+change, ANSI color coding for avalanche danger level (1-5), and a safety
+disclaimer footer. `v1` / MVP is complete: `python main.py` prints a full,
+readable report for all three locations from a fresh clone.
+
+Next: nothing required. Candidates for a future session: SQLite history,
+snowpack charts, scheduled daily run (see "Later" above) -- or just revisit
+once the season opens to confirm the avalanche section looks right with a
+real multi-zone, rated forecast.
