@@ -1,0 +1,26 @@
+# Your spots. Add more by copying a block below -- no code changes needed.
+#
+# lat/lon:        used to query the National Weather Service (weather.py)
+# snotel_station: nearest SNOTEL station "triplet" ID, used to query NRCS (snowpack.py)
+#                 format is "<station number>:<state>:SNTL"
+#                 find stations at https://wcc.sc.egov.usda.gov/nwcc/
+#
+# Avalanche zone is NOT listed here on purpose -- the avalanche module figures out
+# which CAIC zone a location falls in by checking the lat/lon against CAIC's zone
+# map, since zone boundaries don't line up neatly with place names.
+
+locations:
+  - name: Copper Mountain
+    lat: 39.4817
+    lon: -106.1319
+    snotel_station: "415:CO:SNTL"  # Copper Mountain station, co-located
+
+  - name: Loveland Pass
+    lat: 39.6636
+    lon: -105.8792
+    snotel_station: "505:CO:SNTL"  # Grizzly Peak station, ~2.5 mi away
+
+  - name: Vail Pass
+    lat: 39.5306
+    lon: -106.2172
+    snotel_station: "415:CO:SNTL"  # Copper Mountain station, ~4 mi away (nearest available)
