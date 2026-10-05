@@ -5,7 +5,7 @@ location in config/locations.yaml.
 
 import yaml
 
-from conditions_report import weather, report
+from conditions_report import weather, snowpack, report
 
 
 def load_locations(path="config/locations.yaml"):
@@ -19,7 +19,8 @@ def main():
 
     for loc in locations:
         weather_periods = weather.get_forecast(loc["lat"], loc["lon"])
-        report.print_location_report(loc["name"], weather_periods)
+        snow = snowpack.get_snowpack(loc["snotel_station"])
+        report.print_location_report(loc["name"], weather_periods, snow)
 
 
 if __name__ == "__main__":

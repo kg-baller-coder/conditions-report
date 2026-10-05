@@ -68,4 +68,15 @@ _(updated at the end of each session)_
 `kg-baller-coder/conditions-report`). Confirmed all three data sources are
 public/free/no-key. `config/locations.yaml` set up with Copper Mountain,
 Loveland Pass, and Vail Pass (coordinates + nearest SNOTEL station looked up
-for each). Next: build `weather.py` end to end for one location.
+for each).
+
+`weather.py` (NWS) and `snowpack.py` (SNOTEL) are both built, tested
+standalone, and wired into `main.py`/`report.py`. `python main.py` prints a
+working report for all three locations. Decided to keep output terminal-only
+for now (matches the "script I run each morning" use case); a prettier
+format or HTML/web version is a possible later step, not needed now.
+Snowpack numbers are all 0 right now since it's pre-season (early October) --
+logic is confirmed correct, just no snow to report yet.
+
+Next: avalanche module (CAIC danger via avalanche.org API), including the
+point-in-polygon zone lookup described above.

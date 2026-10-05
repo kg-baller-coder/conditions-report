@@ -21,7 +21,32 @@ def print_weather_section(periods):
         print(f"      {p['detailedForecast']}")
 
 
-def print_location_report(name, weather_periods):
+def _fmt_change(value, unit):
+    """Format a +/- change value, or a placeholder if it's unavailable."""
+    if value is None:
+        return "n/a"
+    sign = "+" if value >= 0 else ""
+    return f"{sign}{value} {unit}"
+
+
+def print_snowpack_section(snowpack):
+    """Print a snowpack section. `snowpack` is the dict returned by
+    snowpack.get_snowpack(), or None if that source failed."""
+    print("  SNOWPACK")
+    if snowpack is None:
+        print("    [unavailable]")
+        return
+
+    print(f"    as of {snowpack['date']}: "
+          f"depth {snowpack['depth_in']} in, SWE {snowpack['swe_in']} in")
+    print(f"    24h change: depth {_fmt_change(snowpack['depth_change_24h'], 'in')}, "
+          f"SWE {_fmt_change(snowpack['swe_change_24h'], 'in')}")
+    print(f"    72h change: depth {_fmt_change(snowpack['depth_change_72h'], 'in')}, "
+          f"SWE {_fmt_change(snowpack['swe_change_72h'], 'in')}")
+
+
+def print_location_report(name, weather_periods, snowpack):
     """Print the full report for one location."""
     print(f"\n=== {name} ===")
     print_weather_section(weather_periods)
+    print_snowpack_section(snowpack)
