@@ -128,6 +128,13 @@ Currently reports "season hasn't started" since it's pre-season --
 worth a look once CAIC's season opens to confirm the real breakdown text
 reads well with multiple zones/ratings.
 
+**2026-10-04 (cont'd):** Made the repo public and open source -- added an
+MIT `LICENSE`, and README sections on contributing and adapting it outside
+Colorado (weather/snowpack modules are nationwide via NWS/SNOTEL; the
+avalanche module would need a different avalanche.org `center_id` for
+another state). Live at
+[github.com/kg-baller-coder/conditions-report](https://github.com/kg-baller-coder/conditions-report).
+
 Next: nothing required. Candidates for a future session: SQLite history,
 snowpack charts, scheduled daily run (see "Later" above) -- or just revisit
 once the season opens to confirm the avalanche sections look right with
